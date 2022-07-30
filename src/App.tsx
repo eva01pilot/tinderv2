@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { FC, useState, useEffect, useContext } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth, firestore } from './lib/firebase';
 
-function App() {
+import './App.css';
+import { UserContext } from './lib/context';
+import Main from './Main';
+
+const App:FC=()=> {
+  const [user]:any = useAuthState(auth)
+  const [username, setUsername]:any = useState(null)
+  useEffect(()=>{
+    let unsubscribe
+    if (user){
+      const ref = firestore.collection('users').doc(user.uid)
+      unsubscribe = ref.onSnapshot((doc)=>{
+        setUsername(doc.data()?.firstname)
+      })
+    } else {
+      setUsername(null)
+    }
+    return unsubscribe
+  },[user])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={{user,username}}>
+      <Main/>
+    </UserContext.Provider>
   );
 }
-
 export default App;

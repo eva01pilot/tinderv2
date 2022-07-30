@@ -1,0 +1,19 @@
+.formcontainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    form{
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    input[type='file']{
+        display: none;
+    }
+    .GenderContainer{
+        display: flex;
+        flex-direction: row;
+    }
+}
+}
