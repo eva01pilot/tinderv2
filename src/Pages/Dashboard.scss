@@ -1,0 +1,22 @@
+.dashboard{
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 202, 212, 1);
+    .chats{
+        width: 18.75rem;
+        background-color: rgba(4, 3, 15, 1);
+    }
+    .cards{
+        display: flex;
+        width: calc(100vw - 18.75rem);
+        justify-content: center;
+        align-items: center;
+        .cardscontainer{
+            display: grid;
+            grid-template-columns: 21.875rem;
+            grid-template-rows: 31.25rem;
+        }
+    }
+}
