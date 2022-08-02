@@ -1,6 +1,5 @@
-import React, { FC, useState, useEffect } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth';
-import Card, { actionbutton } from '../components/Card';
+import { useState, useEffect } from 'react'
+import Card  from '../components/Card';
 import { arrayUnion, auth, firestore } from '../lib/firebase'
 
 import './Dashboard.scss'
@@ -12,11 +11,22 @@ function Dashboard() {
   }
 
   const [userArray, setUserArray]:Array<any> = useState([])
+  const [chatsArray, setChatsArray]:Array<any> = useState([])
 
   useEffect(()=>{
     const ref=firestore.collection('users').where('uid', '!=', auth.currentUser.uid)
     ref.get().then(snapshot=>setUserArray(snapshot.docs.map(doc=>doc.data())))
-    console.log(userArray)
+
+    const refMyChatsOne = firestore.collection('chats').where('user1', '==', auth.currentUser.uid)
+    const refMyChatsTwo = firestore.collection('chats').where('user2', '==', auth.currentUser.uid)
+    const unsub = refMyChatsOne.onSnapshot(
+      (snapshot1)=>{
+        refMyChatsTwo.onSnapshot((snapshot2)=>{
+          setChatsArray([...snapshot1.docs.map(doc => doc.data()) , ...snapshot2.docs.map(doc => doc.data())])
+        })
+      }
+      )
+    return unsub
   },[])
   
   const handleClick = async(e:any) =>{
@@ -26,23 +36,32 @@ function Dashboard() {
     switch(val){
       case 'like':{
         const refMe = firestore.collection('users').doc(auth.currentUser.uid)
-        const refTarget = firestore.collection('users').where('uid', '==', e.target.getAttribute('data'))
+        const refTarget = firestore.collection('users').doc(e.target.getAttribute('data'))
         refMe.update({
           likes:arrayUnion(e.target.getAttribute('data'))
         })
-        refTarget.get().then((snapshot)=>{
-          const matches=snapshot.docs[0].data().likes
-        })
-        const Userliked =  (await refTarget.get()).docs[0].data().likes
-        Userliked.indexOf(auth.currentUser.uid)!==-1 && console.log('its a match!')
-        
-        }
 
+        const Userliked = (await refTarget.get()).data()?.likes
+        Userliked.indexOf(auth.currentUser.uid)!==-1 && (()=>{
+          refMe.update({
+            matches: arrayUnion(e.target.getAttribute('data'))
+          })
+          refTarget.update({
+            matches: arrayUnion(auth.currentUser.uid)
+          })
+          const newChatRef = firestore.collection('chats').doc(auth.currentUser.uid+'-X-'+e.target.getAttribute('data'))
+          newChatRef.set({
+            user1: auth.currentUser.uid,
+            user2: e.target.getAttribute('data'),
+            messages:{}
+          })
+        })()
+        }
         break;
       }
       let usrarr = [...userArray]
-    usrarr=usrarr.filter((user)=>user.uid!==e.target.getAttribute('data'))
-    setUserArray(usrarr) 
+      usrarr=usrarr.filter((user)=>user.uid!==e.target.getAttribute('data'))
+      setUserArray(usrarr) 
       }  
     
     
@@ -52,7 +71,13 @@ function Dashboard() {
   return (
     <div className="dashboard">
       <div className="chats">
-
+        {chatsArray.map((chat:looseobject,i:number)=>{
+          return(
+            <>
+              <h1 key={i}> {chat?.user1}, {chat?.user2}</h1>
+            </>
+          )
+        })}
       </div>
       <div className="cards">
         <div className="cardscontainer">
