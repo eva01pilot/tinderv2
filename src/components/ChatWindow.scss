@@ -1,0 +1,59 @@
+.chatwincontainer{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 10rem calc(100vh - 20rem) 10rem;
+    .head{
+        display: grid;
+        grid-template-columns: 3rem 5rem 2rem;
+        background-color: rgb(49, 49, 49);
+        img{
+            width: 5rem;
+            height: 5rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        h1{
+            margin-left: 5rem;
+            color: azure;
+        }
+        .goback{
+            width: 3rem;
+            height: 100%;
+            border-radius: 0%;
+            background-color: rgb(49, 49, 49);
+            border: 0px;
+        }
+    }
+    .messagebox{
+
+        form{
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            textarea{
+                width: calc(100% - 10rem);
+                box-sizing: border-box;
+                height: 100%;
+                margin: 0;
+            }
+            button{
+                align-self:center;
+                height: 100%;
+                width: 10rem;
+            }
+        }
+    }
+}
+.msgcontainer{
+    width: 10rem;
+    height: 5rem;
+    display: grid;
+    align-self: flex-end;
+    border: 1px solid red;
+}
+.messagescontainer{
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}

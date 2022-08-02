@@ -1,0 +1,21 @@
+.chatrowcontainer{
+    width: 18.625rem;
+    height: 3.75rem;
+    margin-bottom: .25rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(87, 87, 87);
+    img{
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        object-fit: cover;
+        
+    }
+    h4{
+        align-self:baseline;
+        margin: 0;
+        margin-left: 1rem;
+    }
+}

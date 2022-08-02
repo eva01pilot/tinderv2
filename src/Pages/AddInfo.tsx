@@ -11,7 +11,8 @@ const AddInfo:FC = () => {
     const [gender, setGender] = useState('male')
     const [description, setDescription] = useState('')
     
-    const handleSubmit = async() =>{
+    const handleSubmit = async(e:any) =>{
+      e.preventDefault()
       const ref = firestore.collection('users').doc(user?.uid)
       await ref.set({
         uid:auth.currentUser.uid,

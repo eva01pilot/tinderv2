@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
-import Card  from '../components/Card';
+
 import { arrayUnion, auth, firestore } from '../lib/firebase'
 
+import Card  from '../components/Card';
+import ChatRow from '../components/ChatRow';
 import './Dashboard.scss'
+import ChatWindow from '../components/ChatWindow';
 
 function Dashboard() {
 
@@ -10,15 +13,16 @@ function Dashboard() {
     [key:string]:any
   }
 
-  const [userArray, setUserArray]:Array<any> = useState([])
-  const [chatsArray, setChatsArray]:Array<any> = useState([])
+  const [userArray, setUserArray] = useState<Array<any>>([])
+  const [chatsArray, setChatsArray] = useState<Array<any>>([])
+  const [chatShown, setChatShown] = useState<null|looseobject>(null)
 
   useEffect(()=>{
     const ref=firestore.collection('users').where('uid', '!=', auth.currentUser.uid)
     ref.get().then(snapshot=>setUserArray(snapshot.docs.map(doc=>doc.data())))
-
-    const refMyChatsOne = firestore.collection('chats').where('user1', '==', auth.currentUser.uid)
-    const refMyChatsTwo = firestore.collection('chats').where('user2', '==', auth.currentUser.uid)
+    
+    const refMyChatsOne = firestore.collection('chats').where('user1.uid', '==', auth.currentUser.uid)
+    const refMyChatsTwo = firestore.collection('chats').where('user2.uid', '==', auth.currentUser.uid)
     const unsub = refMyChatsOne.onSnapshot(
       (snapshot1)=>{
         refMyChatsTwo.onSnapshot((snapshot2)=>{
@@ -26,13 +30,13 @@ function Dashboard() {
         })
       }
       )
+      console.log(chatShown)
     return unsub
-  },[])
+  },[]) 
   
   const handleClick = async(e:any) =>{
     const val = e.target.value
     e.preventDefault()
-    
     switch(val){
       case 'like':{
         const refMe = firestore.collection('users').doc(auth.currentUser.uid)
@@ -41,6 +45,8 @@ function Dashboard() {
           likes:arrayUnion(e.target.getAttribute('data'))
         })
 
+        const me = (await refMe.get()).data()
+        const targetUser = (await refTarget.get()).data()
         const Userliked = (await refTarget.get()).data()?.likes
         Userliked.indexOf(auth.currentUser.uid)!==-1 && (()=>{
           refMe.update({
@@ -51,9 +57,9 @@ function Dashboard() {
           })
           const newChatRef = firestore.collection('chats').doc(auth.currentUser.uid+'-X-'+e.target.getAttribute('data'))
           newChatRef.set({
-            user1: auth.currentUser.uid,
-            user2: e.target.getAttribute('data'),
-            messages:{}
+            user1: me,
+            user2: targetUser,
+            messages:[]
           })
         })()
         }
@@ -69,18 +75,26 @@ function Dashboard() {
   
 
   return (
+
     <div className="dashboard">
       <div className="chats">
         {chatsArray.map((chat:looseobject,i:number)=>{
-          return(
+
+           if (chat.user1.uid===auth.currentUser.uid){ return(
             <>
-              <h1 key={i}> {chat?.user1}, {chat?.user2}</h1>
+            <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user2.uid} username={chat.user2.firstname} avatar={chat.user2.photoURL} />
             </>
-          )
+          )}
+            else{ return(
+              <>
+            <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user1.uid} username={chat.user1.firstname} avatar={chat.user1.photoURL} />
+              </>
+            )
+            }
         })}
       </div>
-      <div className="cards">
-        <div className="cardscontainer">
+      <div className="cardsorchat">
+        {!chatShown && <div className="cardscontainer">
         {userArray.map((user:looseobject)=>{
           return(
           <Card key={user?.uid}
@@ -94,7 +108,10 @@ function Dashboard() {
             /> 
           )
         })}
-        </div>
+        
+        </div>}
+        {chatShown?.user1.uid===auth.currentUser.uid && <ChatWindow onClick={()=>setChatShown(null)} uid={chatShown?.user2.uid} username={chatShown?.user2.firstname} avatar={chatShown?.user2.photoURL}/>}
+        {chatShown?.user2.uid===auth.currentUser.uid && <ChatWindow onClick={()=>setChatShown(null)} uid={chatShown?.user1.uid} username={chatShown?.user1.firstname} avatar={chatShown?.user1.photoURL}/>}
       </div>
     </div>
 

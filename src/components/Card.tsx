@@ -20,7 +20,7 @@ interface userprops {
 const Card:FC<userprops> = (props) =>{
     return(
         <div className="cardcontainer">
-            <img src={props.avatar}></img>
+            <img src={props.avatar} alt="user avatar"></img>
             <h1>{props.username}, {props.userage}</h1>
             <div className="buttonscontainer">
                 <ActionButton data={props.data} value='pass' onClick={props.onClick}>😶</ActionButton>
