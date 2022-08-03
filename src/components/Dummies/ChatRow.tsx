@@ -1,5 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
-import { auth, firestore } from '../lib/firebase'
+import  { FC } from 'react'
 
 import './ChatRow.scss'
 

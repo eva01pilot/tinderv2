@@ -1,16 +1,16 @@
-import React, { ButtonHTMLAttributes, Children, FC } from "react";
-import { JsxElement } from "typescript";
+import React, { FC } from "react";
+
 
 import './Card.scss'
 
 interface userprops {
-    data: string,
+    data?: string,
     username:string,
     userage:number,
-    userdescription:string,
-    usergender:string,
+    userdescription?:string,
+    usergender?:string,
     avatar:string,
-    onClick:any
+    onClick?:any
   }
 
    export interface actionbutton extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
@@ -23,9 +23,9 @@ const Card:FC<userprops> = (props) =>{
             <img src={props.avatar} alt="user avatar"></img>
             <h1>{props.username}, {props.userage}</h1>
             <div className="buttonscontainer">
-                <ActionButton data={props.data} value='pass' onClick={props.onClick}>😶</ActionButton>
-                <ActionButton data={props.data} value='info' onClick={props.onClick}>ℹ️</ActionButton>
-                <ActionButton data={props.data} value='like' onClick={props.onClick}>❤️</ActionButton>
+                <ActionButton data={props.data as any} value='pass' onClick={props.onClick}>😶</ActionButton>
+                <ActionButton data={props.data as any} value='info' onClick={props.onClick}>ℹ️</ActionButton>
+                <ActionButton data={props.data as any} value='like' onClick={props.onClick}>❤️</ActionButton>
             </div>
         </div>
     )

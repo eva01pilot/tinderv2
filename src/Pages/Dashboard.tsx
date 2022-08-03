@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 
 import { arrayUnion, auth, firestore } from '../lib/firebase'
 
-import Card  from '../components/Card';
-import ChatRow from '../components/ChatRow';
+import Card  from '../components/Dummies/Card';
+import ChatRow from '../components/Dummies/ChatRow';
 import './Dashboard.scss'
 import ChatWindow from '../components/ChatWindow';
 import { useGetAuthUserData } from '../../src/lib/hooks'
-import ProfileData from '../components/ProfileData';
-import { EmptyCard } from '../components/EmptyCard';
+import ProfileData from '../components/Dummies/ProfileData';
+import { EmptyCard } from '../components/Dummies/EmptyCard';
+import EditWindow from '../components/EditWindow';
 
 function Dashboard() {
 
@@ -19,6 +20,7 @@ function Dashboard() {
   const [userArray, setUserArray] = useState<Array<any>>([])
   const [chatsArray, setChatsArray] = useState<Array<any>>([])
   const [chatShown, setChatShown] = useState<null|looseobject>(null)
+  const [editShown, setEditShown] = useState<boolean>(false)
 
   const authUser = useGetAuthUserData(auth.currentUser.uid)
 
@@ -82,26 +84,26 @@ function Dashboard() {
   return (
     <div className="dashboard">
       <div className="chats">
-        <ProfileData user={authUser}/>
+        <ProfileData user={authUser} onClick={()=>{setEditShown(!editShown);setChatShown(null);}} shown={editShown}/>
         <h1 style={{paddingLeft:'1rem'}}>Ваши чаты</h1>
         <div className="chatrows">
           {chatsArray.map((chat:looseobject,i:number)=>{
             if (chat.user1.uid===auth.currentUser.uid){ return(
               <>
-                <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user2.uid} username={chat.user2.firstname} avatar={chat.user2.photoURL} />
+                <ChatRow onClick={()=>{setChatShown(chat);setEditShown(false)}} key={i} uid={chat.user2.uid} username={chat.user2.firstname} avatar={chat.user2.photoURL} />
               </>
             )}
               else{ return(
               <>
-                <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user1.uid} username={chat.user1.firstname} avatar={chat.user1.photoURL} />
+                <ChatRow onClick={()=>{setChatShown(chat); setEditShown(false)}} key={i} uid={chat.user1.uid} username={chat.user1.firstname} avatar={chat.user1.photoURL} />
               </>
               )
               }
           })}
         </div>
       </div>
-      <div className="cardsorchat">
-        {!chatShown && <div className="cardscontainer">
+      <div className="cardsorchatoredit">
+        {!chatShown && !editShown && <div className="cardscontainer">
         {userArray.map((user:looseobject)=>{
           return(
           <Card key={user?.uid}
@@ -117,8 +119,12 @@ function Dashboard() {
         })}
         {userArray.length===0&&<EmptyCard/>}
         </div>}
+
+
         {chatShown?.user1.uid===auth.currentUser.uid && <ChatWindow onClick={()=>setChatShown(null)} uid={chatShown?.user2.uid} username={chatShown?.user2.firstname} avatar={chatShown?.user2.photoURL}/>}
         {chatShown?.user2.uid===auth.currentUser.uid && <ChatWindow onClick={()=>setChatShown(null)} uid={chatShown?.user1.uid} username={chatShown?.user1.firstname} avatar={chatShown?.user1.photoURL}/>}
+
+        {editShown&&<EditWindow />}
       </div>
     </div>
 
