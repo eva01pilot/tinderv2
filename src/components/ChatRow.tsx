@@ -15,7 +15,7 @@ const ChatRow:FC<chatprops> = (props) => {
   return (
     <div className="chatrowcontainer" onClick={props.onClick}>
         <img src={props.avatar} alt='user avatar'/>
-        <h4>{props.username}</h4>
+        <h3>{props.username}</h3>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, firestore } from '../lib/firebase'
+import { auth, firestore, STATE_CHANGED, storage } from '../lib/firebase'
 
 import './AddInfo.scss'
 
@@ -10,7 +10,9 @@ const AddInfo:FC = () => {
     const [age, setAge] = useState(0)
     const [gender, setGender] = useState('male')
     const [description, setDescription] = useState('')
+    const [downloadURL, setDownloadURL] = useState('')
     
+
     const handleSubmit = async(e:any) =>{
       e.preventDefault()
       const ref = firestore.collection('users').doc(user?.uid)
@@ -20,9 +22,25 @@ const AddInfo:FC = () => {
         age:age,
         gender: gender,
         description:description,
+        photoURL: downloadURL,
         likes:[],
         matches:[]
       })
+    }
+    const uploadFile = async (e:any)=>{
+      const file = Array.from(e.target.files)[0]
+      const ext = (file as any).type.split('/')[1]
+      console.log(file)
+      const ref = storage.ref(`uploads/${auth.currentUser.uid}/${Date.now()}.${ext}`)
+      const task = ref.put(file as any);
+  
+      task.on(STATE_CHANGED, (snapshot) => {
+        task
+          .then((d) => ref.getDownloadURL())
+          .then((url) => {
+            setDownloadURL(url);
+          });
+      });
     }
   return (
     <div className="formscreen">
@@ -46,9 +64,10 @@ const AddInfo:FC = () => {
             <textarea maxLength={150} id='description' onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>setDescription((e.target as HTMLTextAreaElement).value)} required/>
             <label className='InputFile'>
                 📸 Загрузите фотографию
-            <input  type="file"  accept="image/x-png,image/gif,image/jpeg" />
+            <input  type="file" required accept="image/x-png,image/gif,image/jpeg, image/*" onChange={uploadFile} />
             </label>
             <button type="submit">Сохранить</button>
+            <h1>{downloadURL}</h1>
       </form>
     </div>
   </div>

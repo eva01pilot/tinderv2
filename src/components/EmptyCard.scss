@@ -1,0 +1,22 @@
+.emptycardcontainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 21.875rem;
+    height: 31.25rem;
+    background-color: rgba(224, 242, 233, 1);
+    h1{
+        font-size:10rem;
+        margin:0;
+    }
+}
+@media screen and (max-width:700px){
+    .emptycardcontainer{
+        width: 17.5rem;
+        height: 25rem;
+        h2{
+        text-align: center;
+        }
+    }
+}

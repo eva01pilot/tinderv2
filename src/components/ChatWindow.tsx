@@ -46,6 +46,7 @@ interface chatwintypes{
                 })
             })
         })
+        setInput('')
     }
   return (
     <div className="chatwincontainer">
@@ -74,10 +75,10 @@ interface chatwintypes{
 function SingleMessage(props:any){
     return(
         <>
-        {props.uid===auth.currentUser.uid && <div style={{alignSelf : 'flex-end'}} className="msgcontainer">
+        {props.uid===auth.currentUser.uid && <div style={{alignSelf : 'flex-end'}} className="msgcontainer1">
             <p>{props.content}</p>
         </div>}
-        {props.uid!==auth.currentUser.uid&&<div style={{alignSelf : 'flex-start'}} className="msgcontainer">
+        {props.uid!==auth.currentUser.uid&&<div style={{alignSelf : 'flex-start'}} className="msgcontainer2">
         <p>{props.content}</p>
         
         </div>}

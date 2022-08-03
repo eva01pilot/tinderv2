@@ -5,9 +5,14 @@
     height: 100vh;
     background-color: rgba(255, 202, 212, 1);
     .chats{
+        display:flex;
+        flex-direction: column;
         width: 18.75rem;
         background-color: rgba(4, 3, 15, 1);
         color: aqua;
+        .chatrows{
+            margin-left: .1rem;
+        }
     }
     .cardsorchat{
         display: flex;
@@ -20,4 +25,24 @@
             grid-template-rows: 31.25rem;
         }
     }
+}
+@media screen and (max-width:700px) {
+    .dashboard{
+    .chats{
+        width: 3rem;
+        h1{
+            display: none;
+        }
+        .chatrows{
+            margin: 0%;
+        }
+    }
+    .cardsorchat{
+        width: calc(100vw - 3rem);
+        .cardscontainer{
+            grid-template-columns: 17.5rem;
+            grid-template-rows: 25rem;
+        }
+    }
+}
 }

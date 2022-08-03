@@ -1,11 +1,13 @@
 .chatrowcontainer{
+    box-sizing: border-box;
     width: 18.625rem;
     height: 3.75rem;
     margin-bottom: .25rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: rgb(87, 87, 87);
+    
+    padding-left: 1rem;
     img{
         width: 3rem;
         height: 3rem;
@@ -13,9 +15,20 @@
         object-fit: cover;
         
     }
-    h4{
-        align-self:baseline;
+    h3{
         margin: 0;
         margin-left: 1rem;
+    }
+}
+.chatrowcontainer:hover{
+    background-color: rgb(87, 87, 87);
+}
+@media screen and (max-width:700px){
+    .chatrowcontainer{
+        width: 3rem;
+        padding:0%;
+        h3{
+            display: none;
+        }
     }
 }

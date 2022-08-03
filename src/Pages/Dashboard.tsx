@@ -6,6 +6,9 @@ import Card  from '../components/Card';
 import ChatRow from '../components/ChatRow';
 import './Dashboard.scss'
 import ChatWindow from '../components/ChatWindow';
+import { useGetAuthUserData } from '../../src/lib/hooks'
+import ProfileData from '../components/ProfileData';
+import { EmptyCard } from '../components/EmptyCard';
 
 function Dashboard() {
 
@@ -17,9 +20,11 @@ function Dashboard() {
   const [chatsArray, setChatsArray] = useState<Array<any>>([])
   const [chatShown, setChatShown] = useState<null|looseobject>(null)
 
+  const authUser = useGetAuthUserData(auth.currentUser.uid)
+
   useEffect(()=>{
-    const ref=firestore.collection('users').where('uid', '!=', auth.currentUser.uid)
-    ref.get().then(snapshot=>setUserArray(snapshot.docs.map(doc=>doc.data())))
+    const ref1=firestore.collection('users').where('uid', '!=', auth.currentUser.uid)
+    ref1.get().then(snapshot=>setUserArray(snapshot.docs.filter(doc=>doc.data().matches.indexOf(auth.currentUser.uid) === -1).map(doc=>doc.data())))
     
     const refMyChatsOne = firestore.collection('chats').where('user1.uid', '==', auth.currentUser.uid)
     const refMyChatsTwo = firestore.collection('chats').where('user2.uid', '==', auth.currentUser.uid)
@@ -30,13 +35,13 @@ function Dashboard() {
         })
       }
       )
-      console.log(chatShown)
     return unsub
   },[]) 
   
   const handleClick = async(e:any) =>{
     const val = e.target.value
     e.preventDefault()
+
     switch(val){
       case 'like':{
         const refMe = firestore.collection('users').doc(auth.currentUser.uid)
@@ -45,9 +50,9 @@ function Dashboard() {
           likes:arrayUnion(e.target.getAttribute('data'))
         })
 
-        const me = (await refMe.get()).data()
+        
         const targetUser = (await refTarget.get()).data()
-        const Userliked = (await refTarget.get()).data()?.likes
+        const Userliked = targetUser?.likes
         Userliked.indexOf(auth.currentUser.uid)!==-1 && (()=>{
           refMe.update({
             matches: arrayUnion(e.target.getAttribute('data'))
@@ -57,7 +62,7 @@ function Dashboard() {
           })
           const newChatRef = firestore.collection('chats').doc(auth.currentUser.uid+'-X-'+e.target.getAttribute('data'))
           newChatRef.set({
-            user1: me,
+            user1: authUser,
             user2: targetUser,
             messages:[]
           })
@@ -75,23 +80,25 @@ function Dashboard() {
   
 
   return (
-
     <div className="dashboard">
       <div className="chats">
-        {chatsArray.map((chat:looseobject,i:number)=>{
-
-           if (chat.user1.uid===auth.currentUser.uid){ return(
-            <>
-            <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user2.uid} username={chat.user2.firstname} avatar={chat.user2.photoURL} />
-            </>
-          )}
-            else{ return(
+        <ProfileData user={authUser}/>
+        <h1 style={{paddingLeft:'1rem'}}>Ваши чаты</h1>
+        <div className="chatrows">
+          {chatsArray.map((chat:looseobject,i:number)=>{
+            if (chat.user1.uid===auth.currentUser.uid){ return(
               <>
-            <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user1.uid} username={chat.user1.firstname} avatar={chat.user1.photoURL} />
+                <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user2.uid} username={chat.user2.firstname} avatar={chat.user2.photoURL} />
               </>
-            )
-            }
-        })}
+            )}
+              else{ return(
+              <>
+                <ChatRow onClick={()=>setChatShown(chat)} key={i} uid={chat.user1.uid} username={chat.user1.firstname} avatar={chat.user1.photoURL} />
+              </>
+              )
+              }
+          })}
+        </div>
       </div>
       <div className="cardsorchat">
         {!chatShown && <div className="cardscontainer">
@@ -108,7 +115,7 @@ function Dashboard() {
             /> 
           )
         })}
-        
+        {userArray.length===0&&<EmptyCard/>}
         </div>}
         {chatShown?.user1.uid===auth.currentUser.uid && <ChatWindow onClick={()=>setChatShown(null)} uid={chatShown?.user2.uid} username={chatShown?.user2.firstname} avatar={chatShown?.user2.photoURL}/>}
         {chatShown?.user2.uid===auth.currentUser.uid && <ChatWindow onClick={()=>setChatShown(null)} uid={chatShown?.user1.uid} username={chatShown?.user1.firstname} avatar={chatShown?.user1.photoURL}/>}
