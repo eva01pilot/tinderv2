@@ -10,6 +10,7 @@ import { useGetAuthUserData } from '../../src/lib/hooks'
 import ProfileData from '../components/Dummies/ProfileData';
 import { EmptyCard } from '../components/Dummies/EmptyCard';
 import EditWindow from '../components/EditWindow';
+import { AnimatePresence } from 'framer-motion';
 
 function Dashboard() {
 
@@ -90,12 +91,12 @@ function Dashboard() {
           {chatsArray.map((chat:looseobject,i:number)=>{
             if (chat.user1.uid===auth.currentUser.uid){ return(
               <>
-                <ChatRow onClick={()=>{setChatShown(chat);setEditShown(false)}} key={i} uid={chat.user2.uid} username={chat.user2.firstname} avatar={chat.user2.photoURL} />
+                <ChatRow onClick={()=>{setChatShown(chat);setEditShown(false)}} key={chat.user2} uid={chat.user2.uid} username={chat.user2.firstname} avatar={chat.user2.photoURL} />
               </>
             )}
               else{ return(
               <>
-                <ChatRow onClick={()=>{setChatShown(chat); setEditShown(false)}} key={i} uid={chat.user1.uid} username={chat.user1.firstname} avatar={chat.user1.photoURL} />
+                <ChatRow onClick={()=>{setChatShown(chat); setEditShown(false)}} key={chat.user1} uid={chat.user1.uid} username={chat.user1.firstname} avatar={chat.user1.photoURL} />
               </>
               )
               }
@@ -104,20 +105,26 @@ function Dashboard() {
       </div>
       <div className="cardsorchatoredit">
         {!chatShown && !editShown && <div className="cardscontainer">
-        {userArray.map((user:looseobject)=>{
+        <AnimatePresence exitBeforeEnter>
+        {userArray.map((user:looseobject, i:number)=>{
           return(
-          <Card key={user?.uid}
-            data={user?.uid} 
-            username={user.firstname} 
-            userage={user.age}
-            usergender={user.gender} 
-            avatar={user.photoURL}
-            userdescription={user.description}
-            onClick={handleClick}
-            /> 
+            
+            <Card key={user.photoURL}
+              data={user?.uid} 
+              username={user.firstname} 
+              userage={user.age}
+              usergender={user.gender} 
+              avatar={user.photoURL}
+              userdescription={user.description}
+              onClick={handleClick}
+              isVisible={true}
+          />
+         
           )
         })}
+         
         {userArray.length===0&&<EmptyCard/>}
+        </AnimatePresence>
         </div>}
 
 

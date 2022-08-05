@@ -34,5 +34,25 @@
     .cardcontainer{
         width: 17.5rem;
         height: 25rem;
+        h1{
+            margin-bottom: .5rem;
+        }
+        .buttonscontainer{
+            width: 80%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            .actionbtn{
+                border-radius: 50%;
+                width: 3rem;
+                height: 3rem;
+                cursor: pointer;
+                background-color: blueviolet;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+            }
+    }
     }
 }

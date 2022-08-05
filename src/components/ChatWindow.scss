@@ -1,8 +1,8 @@
 .chatwincontainer{
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-rows: 6.25rem calc(100vh - 11.25rem) 5rem;
+    display: flex;
+    flex-direction: column;
     .head{
         display: grid;
         grid-template-columns: 3rem 5rem 2rem;
@@ -26,26 +26,67 @@
             background-color: rgb(49, 49, 49);
             border: 0px;
         }
+        .goback:hover{
+            animation-name: tudasuda;
+            animation-duration: .4s;
+            animation-iteration-count: infinite;
+        }
     }
     .messagebox{
-        height: 100%;
+        width: 95%;
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+        display: flex;
+        flex-basis: auto;
+        flex-grow: 2;
         form{
-            height: 100%;
             display: flex;
             flex-direction: row;
-            textarea{
+            width: 100%;
+            flex-shrink: 2;
+            .textarea{ 
+                align-self: flex-end;
+                border-radius: 0%;
                 width: calc(100% - 10rem);
                 box-sizing: border-box;
-                height: 100%;
                 margin: 0;
                 border: 0px;
-                border-radius: 15px 15px 0px 0px;
                 outline: none;
+                margin-right: 1rem;
+                overflow-y: scroll;
+                background-color: rgb(245, 240, 240);
+                padding: 1rem;
             }
-            button{
-                align-self:center;
-                height: 100%;
+            button[type='submit']{
+                height: initial;
+                align-self:flex-end;
+                background-color: black;
+                padding: .2rem;
                 width: 10rem;
+                font-size: 3rem;
+                cursor: pointer;
+                p{
+                    display: inline;
+                }
+            }
+            button:hover{
+            p{
+                animation-duration: .4s;
+                animation-name: tudasuda;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+        }
+            @keyframes tudasuda {
+                from {
+                    margin-right: 10%;
+                    width: 100%;
+                  }
+                
+                  to {
+                    margin-left: 10%;
+                    width: 100%;
+                  }
             }
         }
     }
@@ -64,6 +105,9 @@
     word-break: break-all;
     border-radius: 15px 15px 0px 15px;
     padding: .1rem 2rem;
+    .datetime{
+        justify-self:right;
+    }
 }
 .msgcontainer2{
     margin-bottom: 5rem;
@@ -87,6 +131,9 @@
     flex-direction: column;
     overflow: scroll;
     overflow-x: hidden;
+    flex-shrink: 10;
+    flex-grow: 10000;
+    flex-basis: auto;
 }
 .messagescontainer :first-child{
     margin-top: 2rem;
@@ -94,6 +141,12 @@
 }
 .messagescontainer::-webkit-scrollbar {
     display: none; 
+}
+.content{
+    font-size: 1.5rem;
+}
+.datetime{
+    font-size: 1rem;
 }
 @media screen and (max-width:700px){
     .chatwincontainer{
@@ -129,25 +182,30 @@
             }
         }
         .messagebox{
-            height: 100%;
+            margin: 0;
             form{
                 height: 100%;
                 display: flex;
                 flex-direction: row;
-                textarea{
+                .textarea{
                     width: calc(100% - 5rem);
+                    height: 100% !important;
                     box-sizing: border-box;
-                    height: 100%;
                     margin: 0;
                     border: 0px;
-                    border-radius: 15px 15px 0px 0px;
                     outline: none;
+                    height: max(100%, 3rem);
                 }
-                button{
+                button[type='submit']{
+                    padding: .5rem;
                     align-self:center;
                     height: 100%;
                     width: 5rem;
-                    font-size:.8rem;
+                    font-size:2rem;
+                    text-align: center;
+                    p{
+                        margin: 0% !important;
+                    }
                 }
             }
         }

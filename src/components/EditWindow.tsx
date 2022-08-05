@@ -1,4 +1,5 @@
-import React, { FC, useEffect, useState } from 'react'
+import { AnimatePresence } from 'framer-motion';
+import  { FC, useEffect, useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore, STATE_CHANGED, storage } from '../lib/firebase';
 import { useGetAuthUserData } from '../lib/hooks';
@@ -48,9 +49,9 @@ import './EditWindow.scss'
       const ref = storage.ref(`uploads/${auth.currentUser.uid}/${Date.now()}.${ext}`)
       const task = ref.put(file as any);
   
-      task.on(STATE_CHANGED, (snapshot) => {
+      task.on(STATE_CHANGED, () => {
         task
-          .then((d) => ref.getDownloadURL())
+          .then(() => ref.getDownloadURL())
           .then((url) => {
             setDownloadURL(url);
           });
@@ -61,7 +62,9 @@ import './EditWindow.scss'
       <EditForm onClick={handleSubmit} onChange={handleChange} upLoadHandler={uploadFile}
         name={name} age={age}  description={description} photoURL={downloadURL}
       />
-      <Card username={name} userage={age} avatar={downloadURL} />
+      
+        <Card isVisible={true} key={downloadURL} username={name} userage={age} avatar={downloadURL} />
+
     </div>
   )
 }

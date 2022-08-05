@@ -14,6 +14,8 @@
             width: 37.5rem;
             height: 50rem;
             background-image: url('../../public/bgform.png');
+            border-radius: 1rem;
+            box-shadow: .5rem .5rem rgba(238, 124, 238, 0.589);
             form{
                 display: flex;
                 align-items: center;
@@ -134,4 +136,152 @@ input[type='file']{
     background-color: rgb(248, 203, 214);
     padding: 1rem;
     border-radius: 1rem;
+}
+
+
+
+
+@media screen and (max-width:700px){
+    .formscreen{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+            .formcontainer{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: left;
+                width: 90vw;
+                height: 90vh;
+                form{
+                    width: 90%;
+                    height: 90%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: 0;
+                    margin-right: 0;
+                    margin-top: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    input[type='file']{
+                        display: none;
+                    }
+                    textarea{
+                        width: 15rem;
+                        height: 5rem;
+                        resize: none;
+                        border-radius: 0.5rem;
+                        background-color: rgba(255, 239, 159, 0.47);
+                        border-color: rgba(203, 187, 106, 1);
+                        padding-left: .5rem;
+                        padding-top: .5rem;
+                        padding-bottom: .5rem;
+                        font-size: 1.5rem;
+                    }
+                    .InputFile{
+                        background-color: rgb(248, 203, 214);
+                        border-radius: 1rem;
+                        width: 15rem;
+                        padding: 0.5rem;
+                        text-align: center;
+                    }
+                    .GenderContainer{
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        width: 13.125rem;
+                        .radiogroup{
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                input[type='radio']{
+                                    box-sizing: border-box;
+                                    width: 2rem;
+                                    height: 2rem;
+                                    appearance: none;
+                                    border-radius: 50%;
+                                    display: grid;
+                                    place-content:center;
+                            }
+                                input[type='radio']::before{
+                                    content: "\2714";
+                                    font-size: 1rem;
+                                    transform: scale(0);
+                                    text-align: center;
+                                    border-radius: 50%;
+                                    width: 1.25rem;
+                                    height: 1.25rem;
+                                    transition: 120ms transform ease-in-out;
+                                }
+                                input[type='radio']:checked::before{
+                                    transform: scale(1.5);
+        
+                                }
+                                #male{
+                                    background-color: rgba(144, 241, 239, 0.67);
+                                    border-color: rgba(71, 206, 203, 1);
+                                    margin-left: 0;
+                                }
+                                #male::before{
+                                    color:rgb(255, 158, 182) ;
+                                }
+                                #female{
+                                    background-color: rgba(255, 214, 224, 1);
+                                    border-color: rgba(208, 168, 178, 1);
+                                    margin-right: 0;
+                                }
+                                #female::before{
+                                    color:rgb(62, 185, 183);
+                                }
+                            }
+                    }
+                }
+            }
+        }
+    
+    label,input,textarea{
+        margin-bottom: 1rem;
+        font-size: 1rem;
+    }
+    input{
+        width: 13.125rem;
+        height: 2.5rem;
+        border-radius: 1rem;
+        border: 1px solid;
+    }
+    input[type='text']{
+        width: 15rem;
+        padding-left: .5rem;
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+        font-size: 1.5rem;
+    }
+    #name{
+        background-color: rgba(123, 241, 168, 0.44);
+        border-color: rgba(50, 200, 107, 1);
+    }
+    #age{
+        background-color: rgba(193, 251, 164, 0.44);
+        border-color:rgba(161, 210, 137, 1);
+    }
+    
+    label{
+        font-size: .8rem
+    }
+    button{
+        width: 15rem;
+        height: 2rem;
+        border-radius: 1rem;
+        border: 1px solid red;
+        background-color: rgb(252, 113, 148);
+        color:rgb(186, 252, 251);
+        font-size: 1.5rem;
+    }
+    input[type='file']{
+        display: none;
+    }
+
 }

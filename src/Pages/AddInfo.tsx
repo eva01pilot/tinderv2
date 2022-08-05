@@ -48,7 +48,7 @@ const AddInfo:FC = () => {
         <form onSubmit={handleSubmit}>
             <label htmlFor='name'>Введите ваше имя</label>
             <input id='name' type="text" onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setName((e.target as HTMLInputElement).value)}required/>
-            <label htmlFor='age'>Введите ваш возраст</label>
+            <label htmlFor='age'>Введите возраст</label>
             <input id='age' type="text" onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setAge(parseInt((e.target as HTMLInputElement).value))}required/>
             <div className='GenderContainer'>
                <div className="radiogroup">

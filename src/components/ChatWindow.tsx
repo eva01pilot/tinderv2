@@ -1,5 +1,6 @@
-import { FC, useEffect, useState } from "react"
-import { arrayUnion, auth, firestore, serverTimestamp } from "../lib/firebase"
+import { FC, useEffect, useState, useRef, } from "react"
+import { arrayUnion, auth, firestore  } from "../lib/firebase"
+import TextareaAutosize from '@mui/base/TextareaAutosize';
 
 import './ChatWindow.scss'
 interface chatwintypes{
@@ -12,17 +13,27 @@ interface chatwintypes{
  const ChatWindow:FC<chatwintypes> = (props) => {
     const [messages, setMessages] = useState<Array<any>>([])
     const [input, setInput] = useState('')
+    const messagesEndRef = useRef<HTMLDivElement>(null)
+    const messagesRef = useRef<HTMLDivElement>(null)
+    const prevMessagesRef = useRef<any>([])
     useEffect(()=>{
+        prevMessagesRef.current = messages
         const chatRef1 = firestore.doc(`chats/${props.uid}-X-${auth.currentUser.uid}`)
         const chatRef2 = firestore.doc(`chats/${auth.currentUser.uid}-X-${props.uid}`)
         const unsub1 = chatRef1.onSnapshot((snapshot)=>{
-            snapshot.exists && setMessages(snapshot?.data()?.messages) 
+            snapshot.exists && prevMessagesRef.current.length!==snapshot?.data()?.messages.length && setMessages(snapshot?.data()?.messages) 
         })
         const unsub2 = chatRef2.onSnapshot((snapshot)=>{
-            snapshot.exists && setMessages(snapshot?.data()?.messages) 
+            snapshot.exists && prevMessagesRef.current.length!==snapshot?.data()?.messages.length && setMessages(snapshot?.data()?.messages) 
         })
+        if(messagesEndRef.current){
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+        } 
+        console.log(1)
+        
         return unsub1 
-    },[props.uid])
+    },[props.uid, messages])
+   
 
     const handleSubmitMessage = (e:any) =>{
         e.preventDefault()
@@ -47,6 +58,8 @@ interface chatwintypes{
             })
         })
         setInput('')
+        
+        
     }
   return (
     <div className="chatwincontainer">
@@ -55,17 +68,19 @@ interface chatwintypes{
             <img src={props.avatar} alt=''/>
             <h1>{props.username}</h1>
         </div>
-        <div className="messagescontainer">
+        <div className="messagescontainer" ref={messagesRef}>
             {messages.map((message,i) => {return(
              <>
-                <SingleMessage uid={message.sender} content={message.content}/>
+                <SingleMessage uid={message.sender} content={message.content} date={message.createdAt}/>
              </>
             )})}
+            <div></div>
+            <div ref={messagesEndRef} />
         </div>
         <div className="messagebox">
             <form onSubmit={handleSubmitMessage}>
-                <textarea value={input} onChange={(e)=>{setInput(e.target.value);console.log(input)}} required className="messagebox"/>
-                <button type="submit"> Отправить сообщение </button>
+                <TextareaAutosize maxRows={5} className='textarea' value={input} onChange={(e:any)=>{setInput(e.target.value);console.log(input)}} required />
+                <button type="submit"> <p>✍️</p> </button>
             </form>
         </div>
     </div>
@@ -76,11 +91,12 @@ function SingleMessage(props:any){
     return(
         <>
         {props.uid===auth.currentUser.uid && <div style={{alignSelf : 'flex-end'}} className="msgcontainer1">
-            <p>{props.content}</p>
+            <p className="content">{props.content}</p>
+            <p className="datetime">{new Date(props.date).toLocaleTimeString('ru')} / {new Date(props.date).toLocaleDateString('ru')}</p>
         </div>}
         {props.uid!==auth.currentUser.uid&&<div style={{alignSelf : 'flex-start'}} className="msgcontainer2">
-        <p>{props.content}</p>
-        
+            <p className="content">{props.content}</p>
+            <p className="datetime">{new Date(props.date).toLocaleTimeString('ru')} / {new Date(props.date).toLocaleDateString('ru')}</p>
         </div>}
         </>
     )
